@@ -9,7 +9,6 @@ typedef struct Item {
     float price;
     struct Item *next;
 } Item;
-
 // Function prototypes
 void add_item(Item **head);
 void view_items(Item *head);
@@ -18,6 +17,53 @@ void purchase_item(Item *head);
 void save_to_file(Item *head, const char *filename); //Dario
 Item* load_from_file(const char *filename); //Dario
 void free_list(Item **head); //Dario
+
+// add item
+void add_item(Item **head) {
+    Item *new_item =(Item*head)malloc(sizeof(Item));
+    if (!new_item) {
+        printf("Memory something Failed!\n);
+        return;
+    }
+
+    printf("Enter name of item: ");
+    scanf("%[^\n]", new_item->name);
+
+    printf("Enter quantity: ");
+    scanf("%d", &new_item->quantity);
+    if (new_item->quantity < 0) {
+        printf("Invalid quantity!\n");
+        free(new_item);
+        return;
+    }
+
+printf("Enter price: ");
+    scanf("%f", &new_item->price);
+    if (new_item->price <= 0) {
+        printf("Invalid price!\n");
+        free(new_item);
+        return;
+    }
+
+    new_item->next = *head;
+    *head = new_item;
+}
+
+//View all of the items
+void view_items(Item *head) {
+    if (!head) {
+        printf("Inventory is empty.\n");
+        return;
+    }
+
+    printf("\nInventory List:\n");
+    while (head) {
+        printf("Name: %s | Quantity: %d | Price: %.2f | Total Value: %.2f\n",
+            head->name, head->quantity, head->price, head->quantity * head->price);
+        head = head->next;
+    }
+}
+
 
 int main() {
     Item *inventory = load_from_file("inventory.dat");
